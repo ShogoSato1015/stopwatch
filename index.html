@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>table</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+
+        //ページ読み込みが完了したら発動
+        window.onload = function () {
+
+            //DOMから要素タグを引っ張ってくる
+            let monitor = document.getElementById("display");
+            let startButton = document.getElementById("start");
+            let stopButton = document.getElementById("stop");
+            let cancelButton = document.getElementById("cancel");
+            let tableCell = document.getElementById("laptime");
+
+            //最初の段階はstartボタンしか使えないようにする
+            startButton.onclick = start;
+            stopButton.onclick = null;
+            cancelButton.onclick = null
+
+            let startTime = 0;
+            let timer;
+            let holdtime = 0;
+            let count = 0;
+            let display;
+
+            //startボタンを押したときのイベントハンドラ
+            function start() {
+                startButton.onclick = null;
+                stopButton.onclick = stop;
+                cancelButton.onclick = null;
+
+                startTime = new Date();
+                timer = setInterval(
+
+                    function () {
+                        display =`${((new Date() - startTime + holdtime) / 1000).toFixed(3)} (sec)`;
+                        monitor.innerHTML = display;
+                    }, 10)
+            }
+
+            //stopボタンを押したときのイベントハンドラ
+            function stop() {
+                clearInterval(timer);
+                ++count;
+                console.log(`stopCount : ${count}`)
+                stopButton.onclick = null;
+                startButton.onclick = start;
+                cancelButton.onclick = cancel;
+
+                holdtime += new Date() - startTime;
+
+                let row = document.createElement("tr");
+                let num = document.createElement("td");
+                let lap = document.createElement("td");
+
+                num.textContent = `${count}`
+                lap.textContent = display;
+                // `${(holdtime / 1000).toFixed(1)} (sec)`
+
+                row.appendChild(num);
+                row.appendChild(lap);
+                tableCell.appendChild(row);
+            }
+
+            //cancelボタンを押したときのイベントハンドラ
+            function cancel() {
+                startTime = 0;
+                holdtime = 0;
+
+                monitor.innerHTML = "0.00 (sec)";
+
+                for (let i = count; i > 0; i--) {
+                    console.log(i);
+                    document.querySelector("table").deleteRow(i);
+                }
+                count = 0;
+                console.log(`cancelCount : ${count}`)
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+    <p id="display">0.00 (sec)</p>
+    <input type="button" value="count start" id="start">
+    <input type="button" value="count stop" id="stop">
+    <input type="button" value="cancel" id="cancel">
+    
+
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>lap</th>
+            </tr>
+        </thead>
+        <tbody id="laptime">
+
+
+        </tbody>
+    </table>
+    </div>
+
+</body>
+
+</html>
