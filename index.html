@@ -13,12 +13,14 @@
             //DOMから要素タグを引っ張ってくる
             let monitor = document.getElementById("display");
             let startButton = document.getElementById("start");
+            let lapButton = document.getElementById("lap");
             let stopButton = document.getElementById("stop");
             let cancelButton = document.getElementById("cancel");
             let tableCell = document.getElementById("laptime");
 
             //最初の段階はstartボタンしか使えないようにする
             startButton.onclick = start;
+            lapButton.onclick = null;
             stopButton.onclick = null;
             cancelButton.onclick = null
 
@@ -27,10 +29,14 @@
             let holdtime = 0;
             let count = 0;
             let display;
+            let lapDisplay;
+            let laptime = 0;
+            let comment;
 
             //startボタンを押したときのイベントハンドラ
             function start() {
                 startButton.onclick = null;
+                lapButton.onclick = lap;
                 stopButton.onclick = stop;
                 cancelButton.onclick = null;
 
@@ -38,9 +44,28 @@
                 timer = setInterval(
 
                     function () {
-                        display =`${((new Date() - startTime + holdtime) / 1000).toFixed(3)} (sec)`;
-                        monitor.innerHTML = display;
+                        display = `${((new Date() - startTime + holdtime) / 1000).toFixed(3)} `;
+                        monitor.innerHTML = display + '(sec)';
                     }, 10)
+            }
+
+            //ラップボタンを押すと起動するイベントハンドラ
+            function lap() {
+                ++count
+                console.log(`laptime:${laptime}`)
+
+                let row = document.createElement("tr");
+                let num = document.createElement("td");
+                let lap = document.createElement("td");
+
+                num.textContent = `${count}`
+                lapDisplay = `${((new Date() - startTime) / 1000).toFixed(3)} (sec)`
+                lap.textContent = lapDisplay;
+
+                row.appendChild(num);
+                row.appendChild(lap);
+                tableCell.appendChild(row);
+
             }
 
             //stopボタンを押したときのイベントハンドラ
@@ -49,26 +74,32 @@
                 ++count;
                 console.log(`stopCount : ${count}`)
                 stopButton.onclick = null;
-                startButton.onclick = start;
+                lapButton.onclick = null;
+                startButton.onclick = null;
                 cancelButton.onclick = cancel;
+
 
                 holdtime += new Date() - startTime;
 
                 let row = document.createElement("tr");
+                row.setAttribute('id', 'finish')
                 let num = document.createElement("td");
                 let lap = document.createElement("td");
 
-                num.textContent = `${count}`
-                lap.textContent = display;
-                // `${(holdtime / 1000).toFixed(1)} (sec)`
+                num.textContent = `finish! (${count})`
+                lap.textContent = display + '(sec)';
 
                 row.appendChild(num);
                 row.appendChild(lap);
                 tableCell.appendChild(row);
+
+                comment = document.getElementById("comment")
+                comment.innerHTML = `finish time : ${display} (sec)`
             }
 
             //cancelボタンを押したときのイベントハンドラ
             function cancel() {
+                startButton.onclick = start;
                 startTime = 0;
                 holdtime = 0;
 
@@ -79,7 +110,9 @@
                     document.querySelector("table").deleteRow(i);
                 }
                 count = 0;
-                console.log(`cancelCount : ${count}`)
+
+                comment.innerHTML = ""
+
             }
         }
     </script>
@@ -87,24 +120,27 @@
 
 <body>
     <div>
-    <p id="display">0.00 (sec)</p>
-    <input type="button" value="count start" id="start">
-    <input type="button" value="count stop" id="stop">
-    <input type="button" value="cancel" id="cancel">
-    
-
-    <table>
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>lap</th>
-            </tr>
-        </thead>
-        <tbody id="laptime">
+        <p id="display">0.00 (sec)</p>
+        <input type="button" value="count start" id="start">
+        <input type="button" value="lap time" id="lap">
+        <input type="button" value="count stop" id="stop">
+        <input type="button" value="cancel" id="cancel">
 
 
-        </tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>lap</th>
+                </tr>
+            </thead>
+            <tbody id="laptime">
+
+
+            </tbody>
+        </table>
+
+        <p id="comment"></p>
     </div>
 
 </body>
