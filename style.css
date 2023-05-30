@@ -1,0 +1,62 @@
+body {
+    background-color: aqua;
+    padding: 20px 50px;
+
+}
+
+p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+div {
+    margin: auto;
+    text-align: center;
+    background-color: rgb(161, 195, 195);
+    padding-bottom: 105px;
+    padding-top: 20px;
+}
+
+input:hover {
+    color: rgb(216, 88, 33);
+    border-color: rgb(180, 226, 43);
+    border-width: 2px;
+    border: none;
+}
+
+input {
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgb(163, 226, 63);
+    border: none;
+    /* outline: none; */
+    margin-left: 20px;
+
+}
+
+table {
+    
+    border: red 2px solid;
+    border-collapse: collapse;
+    width: 80%;
+    margin: 20px auto;
+}
+
+thead {
+    background-color: rgb(243, 231, 6);
+}
+
+th,
+td {
+    border: red 2px solid;
+    text-align: center;
+    width: 50%;
+
+}
+
+tbody {
+    background-color: white;
+}
+
+
+
